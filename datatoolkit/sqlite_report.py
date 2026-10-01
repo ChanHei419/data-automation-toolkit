@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import sqlite3
+from contextlib import closing
 from pathlib import Path
 
 from datatoolkit.csv_cleaner import dedupe, read_csv
@@ -36,7 +37,9 @@ def load_csv_into_sqlite(
     quoted_columns = ", ".join(f'"{name}"' for name in columns)
     placeholders = ", ".join("?" for _ in columns)
 
-    with sqlite3.connect(db_path) as connection:
+    # closing() guarantees the connection is released (important on Windows,
+    # where open handles block file deletion); the inner context commits.
+    with closing(sqlite3.connect(db_path)) as connection, connection:
         connection.execute(f'DROP TABLE IF EXISTS "{table}"')
         connection.execute(f'CREATE TABLE "{table}" ({column_definitions})')
         connection.executemany(
@@ -62,6 +65,6 @@ def monthly_summary(db_path: str | Path, table: str = "sales") -> list[dict]:
         ORDER BY month
     """
 
-    with sqlite3.connect(db_path) as connection:
+    with closing(sqlite3.connect(db_path)) as connection:
         connection.row_factory = sqlite3.Row
         return [dict(row) for row in connection.execute(query)]
