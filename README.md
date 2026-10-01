@@ -1,5 +1,6 @@
 # Data Automation Toolkit
 
+![Tests](https://github.com/ChanHei419/data-automation-toolkit/actions/workflows/tests.yml/badge.svg)
 ![Python](https://img.shields.io/badge/Python-3.10+-3776AB?logo=python&logoColor=white)
 ![Dependencies](https://img.shields.io/badge/dependencies-zero-success)
 ![Tests](https://img.shields.io/badge/tests-unittest-blue)
